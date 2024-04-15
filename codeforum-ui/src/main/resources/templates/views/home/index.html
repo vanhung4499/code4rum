@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="components/layout/header :: head(~{::title}, ~{}, ~{})">
+  <title th:text="${global.siteInfo.websiteName}">Tech Hub</title>
+</div>
+<link href="/css/views/home.css" th:href="${global.siteInfo.oss + '/css/views/home.css'}" rel="stylesheet"/>
+
+<body id="body">
+<!-- Navigation Bar -->
+<div th:replace="components/layout/navbar :: navbar"></div>
+
+<!-- Main Content -->
+<div class="home">
+  <!-- Category Selection -->
+  <div th:replace="views/home/navbar/index :: navbar(${vo.categories})"></div>
+  <div th:replace="views/home/recommend/index">Featured Recommended Articles List</div>
+
+  <div class="home-wrap bg-color">
+    <div class="home-inter-wrap">
+      <div class="home-body">
+        <div id="articleList" class="cdc-article-panel__list">
+          <div th:replace="views/home/article/list">Article List</div>
+        </div>
+      </div>
+
+      <div class="home-right">
+        <!-- Sidebar Notice -->
+        <div th:if="${!#lists.isEmpty(vo.sideBarItems)}">
+          <div th:replace="views/home/sidebar/index"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Footer Information -->
+  <div th:replace="components/layout/footer :: footer"></div>
+</div>
+<script th:inline="javascript">
+  const archiveId = [[${vo.categoryId}]]
+  const category = [[${ vo.currentCategory }]]
+
+  // Define a function to detect if it's a WeChat browser
+  const isWeixinBrowser = () => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    return userAgent.includes('micromessenger');
+  }
+
+  let triggerThreshold = 100;
+
+  // If it's a WeChat browser
+  if (isWeixinBrowser()) {
+    triggerThreshold = 400;
+  }
+
+  const params = {
+      "category": category ? category : 'All',
+      "triggerThreshold": triggerThreshold,
+      "page": 2
+  }
+  loadMore("#articleList", '/article/api/list/category/' + archiveId, params, "articleList");
+</script>
+</body>
+</html>

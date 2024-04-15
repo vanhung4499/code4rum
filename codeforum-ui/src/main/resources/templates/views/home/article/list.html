@@ -1,0 +1,4 @@
+<!-- Article List -->
+<div th:each="article : ${vo.articles.list}">
+  <div th:replace="components/article/article-card :: article_card(${article})">Main text</div>
+</div>

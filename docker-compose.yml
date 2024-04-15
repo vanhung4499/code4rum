@@ -1,0 +1,90 @@
+version: "3"
+
+services:
+    codeforum:
+        image: vanhung4499/code4rum:latest
+        container_name: codeforum
+        ports:
+        - "8080:8080"
+        environment:
+        - SPRING_PROFILES_ACTIVE=prod
+        volumes:
+        - ./codeforum:/codeforum
+        depends_on:
+        - mysql
+        - redis
+        - elasticsearch
+        - mongodb
+        - rabbitmq
+        networks:
+        - codeforum-network
+        restart: always
+
+    mysql:
+        image: mysql:8.0
+        container_name: mysql
+        ports:
+        - "3306:3306"
+        environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_USER=admin
+        - MYSQL_PASSWORD=secret
+        - MYSQL_DATABASE=code_forum
+        volumes:
+        - ./mysql:/var/lib/mysql
+        networks:
+        - codeforum-network
+        restart: always
+
+    redis:
+        image: redis:6.2
+        container_name: redis
+        ports:
+        - "6379:6379"
+        volumes:
+        - ./redis:/data
+        networks:
+        - codeforum-network
+        restart: always
+
+    elasticsearch:
+        image: elasticsearch:7.10.2
+        container_name: elasticsearch
+        ports:
+        - "9200:9200"
+        - "9300:9300"
+        environment:
+        - discovery.type=single-node
+        volumes:
+        - ./elasticsearch:/usr/share/elasticsearch/data
+        networks:
+        - codeforum-network
+        restart: always
+
+    mongodb:
+        image: mongo:4.4
+        container_name: mongodb
+        ports:
+        - "27017:27017"
+        volumes:
+        - ./mongodb:/data/db
+        networks:
+        - codeforum-network
+        restart: always
+
+    rabbitmq:
+        image: rabbitmq:3.8.9-management
+        container_name: rabbitmq
+        ports:
+        - "5672:5672"
+        - "15672:15672"
+        environment:
+        - RABBITMQ_DEFAULT_USER=admin
+        - RABBITMQ_DEFAULT_PASS=admin
+        networks:
+        - codeforum-network
+        restart: always
+
+networks:
+    codeforum-network:
+        driver: bridge

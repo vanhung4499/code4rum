@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<body class="body-404">
+<div th:replace="components/layout/header :: head(~{::title}, ~{}, ~{})">
+    <title th:text="${global.siteInfo.websiteName}">CodeForum</title>
+</div>
+
+<!-- Navigation bar -->
+<div th:replace="components/layout/navbar :: navbar"></div>
+
+<div th:replace="components/layout/container :: container_all(~{::content})">
+    <content class="text-center">
+        <p>
+            <span style="font-size: 30px;">404 Page Not Found!!!</span>
+        </p>
+    </content>
+</div>
+<div th:replace="components/layout/footer :: footer"></div>
+</body>
+</html>

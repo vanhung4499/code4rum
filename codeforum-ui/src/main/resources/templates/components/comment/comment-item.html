@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
+<!-- Primary Comment and Replies -->
+<div th:fragment="comment_item(comment)" class="comment-list-wrap">
+    <div class="comment-item-wrap">
+        <div class="comment-item-top">
+            <a th:href="${'/user/' + comment.userId}" target="_blank">
+                <img th:src="${comment.userPhoto}" class="comment-item-img" />
+            </a>
+            <div class="common-item-content">
+                <div class="common-item-content-head">
+            <span>
+              <a
+                      th:text="${comment.userName} + ${comment.userId == article.author ? ' (Author)': ''}"
+                      th:href="${'/user/' + comment.userId}"
+                      target="_blank"
+                      class="comment-name"
+              >
+                Author
+              </a>
+            </span>
+                    <span
+                            th:text="${T(com.hnv99.forum.core.util.DateUtil).time2day(comment.commentTime)}"
+                    >
+              Time
+            </span>
+                </div>
+                <div
+                        class="common-item-content-value"
+                        th:text="${comment.commentContent}"
+                >
+                    Content
+                </div>
+                <div>
+                    <div
+                            th:replace="components/comment/comment-action :: comment_action(${comment})"
+                    ></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secondary Comments -->
+    <div
+            th:if="${!#lists.isEmpty(comment.childComments)}"
+            th:each="reply : ${comment.childComments}"
+            class="comment-item-wrap-second"
+    >
+        <div class="comment-item-top">
+            <a th:href="${'/user/' + reply.userId}" target="_blank">
+                <img th:src="${reply.userPhoto}" class="comment-item-img" />
+            </a>
+            <div class="common-item-content">
+                <div class="common-item-content-head">
+            <span>
+              <a
+                      th:text="${reply.userName} + ${reply.userId == article.author ? ' (Author)': ''}"
+                      th:href="${'/user/' + reply.userId}"
+                      target="_blank"
+                      class="comment-name"
+              ></a>
+            </span>
+                    <span
+                            th:text="${T(com.hnv99.forum.core.util.DateUtil).time2day(reply.commentTime)}"
+                    >
+              Reply Time
+            </span>
+                </div>
+                <div
+                        class="common-item-content-value"
+                        th:text="${reply.commentContent}"
+                >
+                    Reply Content
+                </div>
+                <small
+                        th:if="${!#strings.isEmpty(reply.parentContent)}"
+                        style="
+              display: flex;
+              background: #f2f3f5;
+              border: 1px solid #e4e6eb;
+              box-sizing: border-box;
+              border-radius: 4px;
+              padding: 0 12px;
+              line-height: 36px;
+              height: 36px;
+              font-size: 14px;
+              color: #8a919f;
+              margin-top: 8px;
+            "
+                >
+                    <span th:text="${reply.parentContent}">Reply Reference</span>
+                </small>
+                <div>
+                    <div
+                            th:replace="components/comment/comment-action :: sub_comment_action(${comment}, ${reply})"
+                    ></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

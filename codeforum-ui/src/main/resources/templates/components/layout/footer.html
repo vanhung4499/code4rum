@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<footer th:fragment="footer" class="footer-wrap">
+    <div class="foot">
+        <div>
+            <a class="text-reset" href="https://beian.miit.gov.cn" target="_blank">
+                <span th:text="${global.siteInfo.websiteRecord}">鄂ICP备18017282号</span>
+            </a>
+            <a class="text-reset"
+               href="https://paicoding.com"
+               th:text="'© 2024-' + ${#dates.format(#dates.createNow(), 'yyyy')} + ' CodeForum '"
+               target="_blank">
+                © 2023-2024 CodeForum
+            </a>
+        </div>
+        <div class="stats-container">
+            <div class="stats-row">
+                Total PV&nbsp;&nbsp;<span class="visit_cnt" th:text="${global.siteStatisticInfo.pv}">957810</span>
+                &nbsp;&nbsp;Total UV&nbsp;&nbsp;<span class="visit_cnt" th:text="${global.siteStatisticInfo.uv}">153147</span>
+            </div>
+            <div class="stats-row">
+                &nbsp;&nbsp;Today's PV&nbsp;&nbsp;<span class="visit_cnt" th:text="${global.todaySiteStatisticInfo.pv}">957810</span>
+                &nbsp;&nbsp;UV&nbsp;&nbsp;<span class="visit_cnt" th:text="${global.todaySiteStatisticInfo.uv}">153147</span>
+                &nbsp;&nbsp;Currently&nbsp;&nbsp;<span class="visit_cnt" th:text="${global.onlineCnt}">12</span>&nbsp;&nbsp;people online
+            </div>
+        </div>
+    </div>
+</footer>
+</html>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Fixme: Knowledge point - logback configuration variables, how to read Spring configuration parameters -->
+    <springProperty scope="context" name="log.path" source="log.path" defaultValue="logs"/>
+    <springProperty scope="context" name="log.env" source="env.name" defaultValue="NO"/>
+    <property name="log.service.name" value="pai"/>
+    <property name="log.req.name" value="req"/>
+
+    <!-- %m outputs the message, %p logs the level, %t logs the thread name, %d logs the date, %c logs the class name, %i logs the index [increases from 0],,, -->
+    <!-- appender is a child node of configuration, responsible for writing log components. -->
+    <!-- ConsoleAppender: Logs to the console -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d [%t] %-5level|%mdc{traceId}|%mdc{bizCode}|%logger{36}.%M\(%file:%line\) - %msg%n</pattern>
+            <!-- Use UTF-8 for the console, not GBK, to avoid Chinese characters garbling -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- Sends email alert when an error occurs -->
+    <appender name="errorAlarm" class="com.hnv99.forum.core.util.AlarmUtil">
+        <!-- If only Error level logs are needed, then filter them. By default, it's info level, ThresholdFilter -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
+
+    <!-- RollingFileAppender: Rolls log files, records logs to a specified file, when certain conditions are met, records logs to other files -->
+    <!-- The following roughly means: 1. Store logs by date first, when the date changes, rename the previous day's log file to XXX%date%index, and the new log remains demo.log -->
+    <!--                           2. If the date does not change but the current log file size exceeds 1KB, split the current log, rename it -->
+    <appender name="service" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- If only Error level logs are needed, then filter them. By default, it's info level, ThresholdFilter -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <File>${log.path}/${log.service.name}-${log.env}.log</File>
+        <!-- RollingPolicy: Determines the behavior of the RollingFileAppender when rolling occurs, involving file movement and renaming -->
+        <!-- TimeBasedRollingPolicy: The most commonly used rolling policy, it determines the rolling policy based on time, responsible for both rolling and triggering rolling -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- The name of the active file changes every time according to the value of fileNamePattern -->
+            <!-- Define the archive file name -->
+            <fileNamePattern>${log.path}/arch/${log.service.name}-${log.env}.%d.%i.log</fileNamePattern>
+            <!-- Keep logs for 3 days for each generated log file -->
+            <maxHistory>3</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- The maximum size of an active file, the default value is 10MB, can be changed to 1KB for testing -->
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <!-- pattern node, used to set the input format of the log -->
+            <pattern>
+                [%d{yyyy-MM-dd HH:mm:ss}]|%mdc{traceId}|%mdc{bizCode}|{"logger":"%logger{36}", "thread":"%thread", "msg":"%msg"}%n
+            </pattern>
+            <!-- Log encoding: Set the character set here - -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- Request logs -->
+    <appender name="reqLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log.path}/${log.req.name}-${log.env}.log</File>
+        <!-- Rolling strategy, rolling according to time TimeBasedRollingPolicy -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- File path, defines how logs are split - archives each day's logs into a file to prevent logs from filling the entire disk space -->
+            <FileNamePattern>${log.path}/arch/req/req.%d{yyyy-MM-dd}.%i.log.gz</FileNamePattern>
+            <!-- Maximum 100MB for a single log file -->
+            <maxFileSize>100MB</maxFileSize>
+            <!-- Keep only the latest 10 days of logs -->
+            <maxHistory>10</maxHistory>
+            <!-- Specifies the upper limit size of the log file, so when this value is reached, old logs will be deleted -->
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <!-- Log output encoding formatting -->
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss}|%mdc{traceId}|] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="req" level="info" additivity="false">
+        <appender-ref ref="reqLog"/>
+    </logger>
+
+    <logger name="springfox.documentation.spring" level="warn" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="service"/>
+    </logger>
+
+    <!-- Specifies the logging level when there is a logging operation in a specific package in the project -->
+    <!-- Levels in descending order: FATAL > ERROR > WARN > INFO > DEBUG > TRACE -->
+    <!-- additivity=false means that after matching, it will no longer be passed on to other loggers -->
+    <logger name="com.hnv99.forum" level="INFO" additivity="false">
+        <appender-ref ref="service"/>
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="errorAlarm"/>
+    </logger>
+
+    <!-- Console output log level -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="service"/>
+    </root>
+</configuration>

@@ -1,0 +1,17 @@
+image:
+  # Absolute path on the server to store images
+  abs-tmp-path: /home/admin/storage/
+  # Image prefix
+  web-img-path: forum/img/
+  # Temporary storage directory
+  tmp-upload-path: /tmp/forum/
+  # Image access domain name
+  cdn-host: https://imgs.codeforum.top/
+  oss:
+    type: local
+    endpoint:
+    prefix: codeforum/
+    ak:
+    sk:
+    bucket:
+    host:

@@ -1,0 +1,22 @@
+image:
+  abs-tmp-path: /tmp/storage/
+  web-img-path: /forum/image/
+  tmp-upload-path: /tmp/forum/
+  cdn-host:
+  oss:
+    type: local
+    prefix: codeforum/
+    endpoint:
+    ak:
+    sk:
+    bucket:
+    host: https://cdn.codeforum.com
+
+spring:
+  web:
+    resources:
+      # Support for links after local image uploads, where file:///d is for Windows systems and file: is for macOS/Linux systems
+      static-locations:
+        - classpath:/static/
+        - file:///d:${image.abs-tmp-path}
+        - file:${image.abs-tmp-path}

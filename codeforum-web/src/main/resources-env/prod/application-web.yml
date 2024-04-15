@@ -1,0 +1,13 @@
+log:
+  path: /home/admin/workspace/codeforum/logs # Please replace with the actual address
+env:
+  name: prod
+
+spring:
+  thymeleaf:
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    cache: true # Enable caching
+

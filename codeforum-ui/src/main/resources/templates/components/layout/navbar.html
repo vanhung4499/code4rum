@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="navbar">
+    <nav
+            th:data-islogin="${global.isLogin}"
+            class="navbar navbar-expand-md bg-color-white fixed-top"
+    >
+        <div class="nav-body">
+            <div class="nav-logo-wrap-lg">
+                <a class="navbar-logo-wrap" href="/">
+                    <img class="logo" src="/img/logo.svg" th:src="${global.siteInfo.oss + '/img/logo.svg'}"/>
+                    <img src="/img/icon.png" class="logo-lg" alt="" th:src="${global.siteInfo.oss + '/img/icon.png'}"/>
+                </a>
+                <div class="dropdown nav-menu-lg">
+                    <div class="dropdown">
+                        <div
+                                class="nav-menu-lg-btn dropdown-toggle"
+                                type="button"
+                                data-toggle="dropdown"
+                                aria-expanded="false"
+                        >
+                            Home
+                        </div>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/">Home</a>
+                            <a class="dropdown-item" href="/column">Tutorials</a>
+                            <a class="dropdown-item" href="/chat">Smart Chat</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav">
+                    <li th:class="${'nav-item' + (!#strings.equals(global.currentDomain, 'column') && !#strings.equals(global.currentDomain, 'follow') && !#strings.equals(global.currentDomain, 'chat') ? ' selected-domain' : '')}" class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li th:class="${'nav-item' + (#strings.equals(global.currentDomain, 'column') ? ' selected-domain' : '')}" class="nav-item">
+                        <a class="nav-link" href="/column">Tutorials</a>
+                    </li>
+                    <li th:class="${'nav-item' + (#strings.equals(global.currentDomain, 'chat') ? ' selected-domain' : '')}" class="nav-item">
+                        <a class="nav-link" href="/chat">Smart Chat</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <button
+                        type="button"
+                        class="btn btn-primary nav-article"
+                        th:data-target="${global.isLogin ? '' : '#loginModal'}"
+                        th:data-toggle="${global.isLogin ? '' : 'modal'}"
+                >
+                    Write an Article
+                </button>
+                <ul th:if="${!global.isLogin}">
+                    <!-- To be logged in -->
+                    <li class="nav-item">
+                        <a
+                                class="nav-link"
+                                href="#"
+                                data-toggle="modal"
+                                data-target="#loginModal"
+                        >
+                            Log In
+                        </a>
+                    </li>
+                </ul>
+                <ul th:if="${global.isLogin}" class="nav-right-user">
+                    <!-- Logged in -->
+                    <li class="nav-item nav-notice">
+                        <a class="nav-link navbar-count-msg-box" href="/notice/">
+        <span
+                th:if="${global.msgNum != null && global.msgNum > 0}"
+                th:text="${global.msgNum}"
+                class="navbar-count-msg"
+        ></span>
+                            <!-- Message notification badge -->
+                            <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="icon"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="2"
+                                    stroke="currentColor"
+                                    fill="none"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                            >
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path
+                                        d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"
+                                ></path>
+                                <path d="M9 17v1a3 3 0 0 0 6 0v-1"></path>
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="nav-item vip" th:if="${global.user != null && global.user.starStatus != null}">
+                        <div th:switch="${global.user.starStatus.code}">
+                            <span th:case="2" th:text="Star VIP Member"></span>
+                            <span th:case="1" th:text="Under Review"></span>
+                            <a href="#" data-target="#registerModal" data-toggle="modal" th:case="-1">
+                                <span th:text="Bind Star ID"></span>
+                            </a>
+                        </div>
+                        <img src="/img/vip.gif" alt="VIP" th:src="${global.siteInfo.oss + '/img/vip.gif'}"/>
+                    </li>
+
+                    <!-- Avatar box -->
+                    <div class="nav-right-user">
+                        <div class="nav-user-avatar">
+                            <img
+                                    class="nav-login-img"
+                                    style="border-radius: 50%"
+                                    th:src="${global.user.photo}"
+                                    src="https://static.developers.pub/static/img/logo.b2ff606.jpeg"
+                                    alt=""
+                                    loading="lazy"
+                            />
+                            <div class="nav-user-arrow"></div>
+                            <div class="nav-user-dropdown">
+                                <div class="nav-user-dropdown-inner nav-user-dropdown::before">
+                                    <!-- Dropdown content -->
+                                    <!-- Adjusted so that all users can directly see the admin panel th:if="${#strings.equalsIgnoreCase(global.user.role, 'admin')}"-->
+                                    <!-- Do not display in local environment, in local environment, the admin panel is directly started by the backend -->
+                                    <a
+                                            th:if="${#strings.equals(global.env, 'prod')}"
+                                            href="/admin/#/statistics/index"
+                                            target="_blank"
+                                            class="dropdown-item"
+                                    >
+                                        Admin Panel
+                                    </a>
+                                    <div
+                                            th:if="${#strings.equalsIgnoreCase(global.user.role, 'admin')}"
+                                            class="dropdown-divider"
+                                    ></div>
+                                    <a
+                                            th:href="${'/user/home?userId=' + global.user.userId}"
+                                            class="dropdown-item"
+                                            href="#"
+                                    >
+                                        Profile
+                                    </a>
+                                    <a id="logoutBtn" href="/logout" class="dropdown-item">Logout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+    <!-- Login Modal -->
+    <div
+            th:if="${!global.isLogin}"
+            class="modal fade"
+            id="loginModal"
+            data-backdrop="static"
+            data-keyboard="false"
+            tabindex="-1"
+            role="dialog"
+            aria-hidden="true"
+    >
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Log in to enjoy more benefits</h6>
+                    <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                    >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="auth-body">
+                        <div class="login-main">
+                            <!-- Divided into two parts, below are other login methods such as GitHub, verification code -->
+                            <div class="panel">
+                                <h1 class="title">Login with Username and Password</h1>
+                                <!-- Login form, username and password -->
+                                <form id="login-form">
+                                    <div class="form-group">
+                                        <input type="text" required autocomplete="off" class="form-control form-control-sm" id="username" placeholder="Enter Username">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="password" required class="form-control form-control-sm" id="password" placeholder="Enter Password">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block btn-sm">Log in</button>
+                                </form>
+                            </div>
+                            <div class="other-login-box">
+                                <div class="oauth-box">
+                                    <span>Other login methods:</span>
+                                    <div class="oauth">
+                                        <div class="oauth-bg">
+                                            <!-- GitHub log svg -->
+                                            <svg data-v-52064cc0="" width="24px" height="24px" viewBox="0 0 46 46" version="1.1"
+                                                 xmlns="http://www.w3.org/2000/svg"
+                                                 class="github-icon"><title data-v-52064cc0="">icon_GitHub</title><desc data-v-52064cc0="">Created with sketchtool.</desc><defs data-v-52064cc0=""></defs><g data-v-52064cc0="" id="状态" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g data-v-52064cc0="" id="注册" transform="translate(-758.000000, -600.000000)"><g data-v-52064cc0="" id="Group-4" transform="translate(758.000000, 600.000000)"><rect data-v-52064cc0="" id="Rectangle-314" fill-opacity="0" fill="#D8D8D8" x="0" y="0" width="46" height="46"></rect><path data-v-52064cc0="" d="M5,23.4307576 C5,31.1317497 10.1024923,37.6642712 17.179508,39.9691117 C18.0705582,40.1296159 18.3952722,39.5913918 18.3952722,39.1291397 C18.3952722,38.7161088 18.3799658,37.61933 18.3712193,36.1651618 C13.4174176,37.2180695 12.3722103,33.8282205 12.3722103,33.8282205 C11.5620653,31.8144276 10.3944069,31.2783436 10.3944069,31.2783436 C8.77739677,30.1976152 10.5168579,30.2190158 10.5168579,30.2190158 C12.3044248,30.342069 13.2446741,32.0155929 13.2446741,32.0155929 C14.8332581,34.6788928 17.413477,33.9095426 18.4280715,33.4633409 C18.5898819,32.3376714 19.0501667,31.5693912 19.5585573,31.1338898 C15.6040438,30.6941082 11.4461741,29.198209 11.4461741,22.5190936 C11.4461741,20.6165837 12.1404279,19.0596928 13.2796601,17.8420009 C13.0959835,17.4011493 12.4848215,15.6281127 13.4545902,13.2291098 C13.4545902,13.2291098 14.9491492,12.7604375 18.3515396,15.0160567 C19.7717533,14.6287065 21.2958318,14.4361015 22.8100705,14.4286113 C24.3232158,14.4361015 25.846201,14.6287065 27.2686013,15.0160567 C30.6688051,12.7604375 32.1611774,13.2291098 32.1611774,13.2291098 C33.1331328,15.6281127 32.5219708,17.4011493 32.3393875,17.8420009 C33.4808064,19.0596928 34.1695936,20.6165837 34.1695936,22.5190936 C34.1695936,29.2153294 30.005164,30.6887581 26.0386241,31.1199794 C26.6771189,31.6582035 27.246735,32.7218115 27.246735,34.3482542 C27.246735,36.6777053 27.2248688,38.5577447 27.2248688,39.1291397 C27.2248688,39.5956719 27.5463028,40.1381761 28.4493795,39.9680417 C35.5209286,37.657851 40.6190476,31.1296097 40.6190476,23.4307576 C40.6190476,13.8037149 32.6444218,6 22.8078838,6 C12.9746258,6 5,13.8037149 5,23.4307576 Z" id="Fill-3" fill="#161614"></path></g></g></g></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="clickable" data-toggle="modal" data-target="#registerModal" data-dismiss="modal">
+                                    Bind Star ID, Enjoy VIP Services
+                                </a>
+                            </div>
+                        </div>
+                        <div class="tabpane-container">
+                            <h2 class="title">Scan the QR Code with WeChat or Long Press to Identify</h2>
+                            <div class="first">
+                                <img class="signin-qrcode" th:src="${global.siteInfo.contactMeWxQrCode}"/>
+                            </div>
+
+                            <div class="explain">
+                                <bold>Enter Verification Code</bold>
+                                <span id="code"></span>
+                                <div><span id="state">Valid for Five Minutes 👉</span> <a id="refreshCode">Manually Refresh</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="agreement-box">
+                        <div class="mdnice-user-dialog-footer">
+                            <p>By logging in, you agree to the
+                                <a href="article/detail/141"
+                                   target="_blank" rel="noopener noreferrer">
+                                    User Agreement
+                                </a> and
+                                <a href="article/detail/142"
+                                   target="_blank" rel="noopener noreferrer">
+                                    Privacy Policy
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mock-login" th:if="${!#strings.equals(global.env, 'prod')}">
+                        <!-- Non-production environment, use mock login -->
+                        <button
+                                id="mockLogin2"
+                                type="button"
+                                th:data-verify-code="''"
+                                class="btn btn-sm btn-light"
+                        >
+                            Random New User
+                        </button>
+
+                        <button
+                                id="mockLogin"
+                                type="button"
+                                th:data-verify-code="''"
+                                class="btn btn-sm btn-dark"
+                        >
+                            One-Click Login
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+            <!-- Bind planet user -->
+            <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title">Bind the Paicoding Star, Enjoy VIP Exclusive Services!</h6>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="auth-body">
+                                <div class="register-main">
+                                    <!-- Divided into two parts, below are other login methods such as GitHub, verification code -->
+                                    <div class="panel">
+                                        <h1 class="title">
+                                            <a target="_blank"
+                                               class="underline"
+                                               href="https://paicoding.com/article/detail/358">Click here to learn how to get the Star ID, open in new window</a>
+                                        </h1>
+                                        <form id="register-form">
+                                            <div class="form-group">
+                                                <input type="text"
+                                                       placeholder="Star ID, click the link above for detailed tutorial"
+                                                       class="form-control form-control-sm"
+                                                       required
+                                                       id="starNumber"
+                                                       autocomplete="off">
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="text"
+                                                       placeholder="Used for username and password login"
+                                                       class="form-control form-control-sm"
+                                                       id="registerUser" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="password" placeholder="Password, something you can remember" class="form-control form-control-sm" id="registerPassword" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="text" placeholder="Search for '沉默王二' on WeChat to get the invitation code, can also be left blank" class="form-control form-control-sm" id="invitationCode" autocomplete="off">
+                                            </div>
+                                            <!-- After binding, log in directly -->
+                                            <button type="submit"
+                                                    class="btn btn-primary btn-block btn-sm"
+                                                    th:text="${global.isLogin} ? 'Bind' : 'Bind and Log in'">Bind/Bind and Log in</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="tabpane-container">
+                                    <h2 class="title">Add WeChat 'itwanger' for faster review</h2>
+                                    <div class="first">
+                                        <img class="signin-qrcode" th:src="${global.siteInfo.contactMeStarQrCode}"/>
+                                    </div>
+
+                                    <div class="explain">
+                                        <bold>Remember to note</bold>
+                                        <code>Star ID</code>
+                                        <div>I will review based on the Star ID</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <script
+                    src="/js/mock.js"
+                    th:if="${!#strings.equals(global.env, 'prod')}"
+            ></script>
+            <script th:inline="javascript">
+                // Whether to automatically refresh the verification code
+            let autoRefresh;
+            const stateTag = $('#state'), codeTag = $('#code');
+
+            // Login
+            $("#login-form").on("submit", function(event) {
+              event.preventDefault();
+
+              // Get the username and password, ID not defined
+              const username = $("#username").val();
+              const password = $("#password").val();
+
+              $.ajax({
+                url: "/login/username",
+                type: "POST",
+                data: {
+                  username: username,
+                  password: password
+                },
+                success: function(response) {
+                  console.log(response);
+                  if(response.status.code === 0) {
+                    // Login successful
+                    refreshPage();
+                  } else {
+                    // Login failed
+                    toastr.error(response.status.msg);
+                  }
+                },
+                error: function(error) {
+                  console.error(error);
+                  // How to handle when an error occurs
+                }
+              });
+            });
+
+            // Bind star
+            $("#register-form").on("submit", function(event) {
+              event.preventDefault();
+
+              // Get the username and password, ID not defined
+              const registerUser = $('#registerUser').val();
+              const starNumber = $("#starNumber").val() || '00000';
+              const password = $("#registerPassword").val();
+              const invitationCode = $("#invitationCode").val();
+
+              $.ajax({
+                url: "/login/register",
+                type: "POST",
+                data: {
+                  username: registerUser,
+                  starNumber: starNumber.toString().padStart(5, '0'), // "00001",
+                  password: password,
+                  invitationCode: invitationCode
+                },
+                success: function(response) {
+                  console.log(response);
+                  if(response.status.code === 0) {
+                    // Login successful
+                    refreshPage();
+                  } else {
+                    // Login failed
+                    toastr.error(response.status.msg);
+                  }
+                },
+                error: function(error) {
+                  console.error(error);
+                  // How to handle when an error occurs
+                }
+              });
+            });
+
+
+            $(".nav-article").click(() => {
+              if ([[${global.isLogin}]]) {
+                // Open a new page for article editing
+                // Remove local cache
+                localStorage.removeItem('articleTitle');
+                window.open("/article/edit")
+              }
+            })
+
+            // Define a method to refresh the page
+            function refreshPage() {
+              if (window.location.pathname === "/login") {
+                // Successful login, redirect to the homepage
+                window.location.href = "/";
+              } else {
+                // Refresh the current page
+                window.location.reload();
+              }
+            }
+
+
+                /**
+             * Record long connection
+             * @type {null}
+             */
+            let sseSource = null;
+            let intHook = null;
+            let deviceId = null;
+
+            /**
+             * Establish a semi-long connection for automatic login implementation
+             */
+            function buildConnect() {
+              if (sseSource != null) {
+                try {
+                  sseSource.close();
+                } catch (e) {
+                  console.log("Closing previous connection", e);
+                }
+                try {
+                  window.clearInterval(intHook);
+                } catch (e) {
+                }
+              }
+
+              if(!deviceId) {
+                deviceId = getCookie("f-device");
+              }
+              const subscribeUrl = "/subscribe?deviceId=" + deviceId;
+              const source = new EventSource(subscribeUrl);
+              sseSource = source;
+
+              source.onmessage = function (event) {
+                let text = event.data.replaceAll("\"", "").trim();
+                console.log("receive: " + text);
+
+                let newCode;
+                if (text.startsWith('refresh#')) {
+                  // Refresh verification code
+                  newCode = text.substring(8).trim();
+                  codeTag.text(newCode);
+                  stateTag.text("Refreshed ");
+                } else if (text === 'scan') {
+                  // QR code scanned
+                  stateTag.text("Scanned ");
+                } else if (text.startsWith('login#')) {
+                  // Login format is login#cookie
+                  console.log("Login successful, save cookie", text)
+                  document.cookie = text.substring(6);
+                  source.close();
+                  refreshPage();
+                } else if (text.startsWith("init#")) {
+                  newCode = text.substring(5).trim();
+                  codeTag.text(newCode);
+                  console.log("Initialize verification code: ", newCode);
+                }
+
+                if (newCode != null) {
+                  try {
+                    window.clearInterval(intHook);
+                  } catch (e) {}
+                }
+
+                if ([[${!#strings.equals(global.env, 'prod')}]]) {
+                  $("#mockLogin").attr('data-verify-code', newCode);
+                  $("#mockLogin2").attr('data-verify-code', newCode);
+                }
+              };
+
+              source.onopen = function (evt) {
+                deviceId = getCookie("f-device");
+                console.log("Start subscribing, device id=", deviceId, evt);
+              }
+              source.onerror = function (e, evt) {
+                console.log("Connection error, restarting", e, evt)
+                stateTag.text("Connection interrupted, please refresh and reconnect");
+                buildConnect(code);
+              }
+
+              fetchCodeCnt = 0;
+              intHook = self.setInterval("fetchCode()", 1000);
+            }
+
+            let fetchCodeCnt = 0;
+            function fetchCode() {
+              if (deviceId) {
+                if (++fetchCodeCnt > 5) {
+                  // To avoid constantly sending requests to the backend, a maximum retry count limit is set
+                  try {
+                    window.clearInterval(intHook);
+                  } catch (e) {}
+                  return;
+                }
+
+                $.ajax({
+                  url: "/login/fetch?deviceId=" + deviceId, type: "get", dataType: "text", success: function (data) {
+                    console.log("data>>>>>>>>: ", data);
+                    if (data != 'fail') {
+                      codeTag.text(data);
+                      try {
+                        window.clearInterval(intHook);
+                      } catch (e) {}
+                    }
+                  },
+                  error: function (e) {
+                    console.log("some error! ", e);
+                  }
+                });
+              } else {
+                console.log("Device ID not obtained, try again later!");
+              }
+            }
+
+            function refreshCode() {
+              $.ajax({
+                url: "/login/refresh?deviceId=" + deviceId,
+                dataType: "json",
+                type: "get",
+                success: function (data) {
+                  const code = data['result']['code'];
+                  const reconnect = data['result']['reconnect']
+                  console.log("Verification code refreshed: ", data);
+
+                  if (reconnect) {
+                    // Re-establish connection
+                    buildConnect();
+                    $('#state').text("Refreshed!");
+                  } else if(code) {
+                    if (codeTag.text() !== code) {
+                      console.log("Manually refreshed verification code!");
+                      codeTag.text(code);
+                      stateTag.text("Refreshed!");
+                    } else {
+                      console.log("Verification code already refreshed!");
+                    }
+                  }
+                }
+              })
+            }
+
+            $('#loginModal').on('show.bs.modal', function () {
+              console.log("Login modal displayed!");
+              buildConnect();
+            })
+
+            $('#refreshCode').click(() => {
+              refreshCode();
+            })
+
+            // Get user avatar and dropdown elements
+            const navUserAvatar = document.querySelector('.nav-user-avatar');
+            const navUserDropdown = document.querySelector('.nav-user-dropdown');
+
+            if (navUserAvatar != null && navUserDropdown != null) {
+              // Show dropdown when clicking user avatar
+              navUserAvatar.addEventListener('click', () => {
+                // If dropdown is hidden, show it; if already shown, do nothing
+                if (navUserDropdown.style.display === 'none' || navUserDropdown.style.display === '') {
+                  navUserDropdown.style.display = 'block';
+                }
+              });
+              // Hide dropdown when clicking outside
+              document.addEventListener('click', (event) => {
+                // If clicked area is not user avatar or dropdown, hide the dropdown
+                if (!navUserAvatar.contains(event.target) && !navUserDropdown.contains(event.target)) {
+                  navUserDropdown.style.display = 'none';
+                }
+              });
+            }
+
+            </script>
+        </div>
+</html>

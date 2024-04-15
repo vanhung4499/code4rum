@@ -1,0 +1,24 @@
+# Email Configuration
+spring:
+  mail:
+    host: smtp.gmail.com
+    from: vanhung4499@gmail.com
+    # Fill in your own sender username and authorization code
+    username:
+    password:
+    default-encoding: UTF-8
+    port: 465
+    properties:
+      mail:
+        smtp:
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+            fallback: false
+          auth: true
+          starttls:
+            enable: true
+            required: true
+alarm:
+  # Email address of the user(s) receiving alarms, separate multiple addresses with commas
+  user: vanhung4499@gmail.com

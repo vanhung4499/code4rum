@@ -1,0 +1,15 @@
+view:
+  site:
+    websiteName: Code Forum
+    websiteLogoUrl: https://codeforum.com/img/logo.svg
+    websiteFaviconIconUrl: https://codeforum.com/img/icon.png
+    contactMeTitle: Contact Me - Hung Nguyen
+    pageSize: 20
+    cdnImgStyle:
+    websiteRecord: The record was attacked by villains
+    host: https://codeforum.com
+    welcomeInfo: Welcome to Code Forum, click <a href="/article/detail/155">here</a> to learn about us.
+    oss: https://cdn.codeforum.com/codeforum/static
+
+knife4j:
+  production: true # Enable blocking document resources

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<!-- Notification -->
+<div th:fragment="notify_follow_item(msg)" class="notification">
+  <a
+          th:href="'/user/home?userId=' + ${msg.operateUserId}"
+          class=""
+          target="_blank"
+  >
+    <img
+            th:src="${msg.operateUserPhoto}"
+            class="notification-img"
+            loading="lazy"
+    />
+  </a>
+  <div class="notification-right">
+    <div class="notification-content">
+      <div class="profile">
+        <a
+                th:href="'/user/home?userId=' + ${msg.operateUserId}"
+                class=""
+                target="_blank"
+        >
+          <span class="name" th:text="${msg.operateUserName}"></span>
+        </a>
+        followed you
+      </div>
+    </div>
+    <div class="notification-bottom">
+        <span
+                class="notification-time"
+                th:text="${T(com.hnv99.forum.core.util.DateUtil).time2day(msg.createTime)}"
+        >
+          4 days ago
+        </span>
+    </div>
+  </div>
+  <div class="action" th:if="${global.isLogin && global.user.userId != msg.operateUserId}">
+    <div class="action-item">
+      <button class="follow-btn c-btn"
+              th:data-user-id="${msg.operateUserId}"
+              th:data-followed="${msg.msg}"
+              onclick="followAction(this)">
+        <span th:text="${msg.msg == 'true' ? 'Unfollow': 'Follow'}">Follow</span>
+      </button>
+    </div>
+  </div>
+</div>
+</html>

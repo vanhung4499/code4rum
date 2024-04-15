@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
+<!-- Sidebar -->
+<div class="home-right-item-wrap" th:fragment="side_about(side)">
+    <div class="home-right-item-title">
+        <h5 th:text="${side.title}">About the Community</h5>
+    </div>
+    <div class="home-right-item-about-content" th:text="${side.content}">
+        An open-source community
+    </div>
+</div>

@@ -1,0 +1,90 @@
+server:
+  port: 8080
+  servlet:
+    session:
+      timeout: 5m # Set the session timeout to five minutes
+  compression:
+    enabled: true # Enable compression of returned results to reduce transmission time
+    min-response-size: 2KB
+
+spring:
+  # Spring Boot 2.4 deprecated spring.profiles to enhance support for Kubernetes
+  # profiles:
+  #   active: dal,web,config,image
+  # Replace the deprecated spring.profiles.active configuration parameter above
+  config:
+    import: application-dal.yml, application-web.yml, application-config.yml, application-image.yml, application-email.yml, application-rabbitmq.yml
+
+  main:
+    # Introduce the following configuration mainly to solve the multi-data source functionality implemented by custom implementation,
+    # and replace the default datasource with the self-registered datasource
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+  mvc:
+    async:
+      request-timeout:
+  liquibase:
+    change-log: classpath:liquibase/master.xml
+    enabled: true # When the actual database used does not support liquibase, such as mariadb, set this parameter to false
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 10MB
+
+servlet:
+  tomcat:
+    max-swallow-size: -1 # To solve the connection reset issue when uploading images larger than 2MB
+
+security:
+  salt: code_forum # Password salt, a more secure approach would be to use a unique salt for each user's password and store it in the user table
+  salt-index: 3 # Position where the salt is inserted
+
+codeforum:
+  sensitive: # Configuration related to sensitive word validation
+    enable: true
+    deny: # Custom sensitive words, separated by commas
+    allow: # Custom non-sensitive words, separated by commas
+  jwt:
+    issuer: code_forum # Issuer
+    secret: hello_world # Signing key
+    expire: 2592000000 # Expiration time of the JWT, default is 30 days
+
+# Default database name
+database:
+  name: code_forum
+
+# Unified configuration for MyBatis
+mybatis-plus:
+  configuration:
+    # Enable underscore to camel case mapping
+    map-underscore-to-camel-case: true
+
+
+# knife4j
+knife4j:
+  enable: true
+  setting:
+    language: zh-CN
+  openapi:
+    title: CodeForum
+    description: A community system based on Spring Boot, MyBatis-Plus, MySQL, Redis, ElasticSearch, MongoDB, Docker, RabbitMQ and other technology stacks. It is a modern community project that is very suitable for secondary development/practical combat 👍.
+    version: 1.0.0
+    concat:
+      - Hung Nguyen Van
+      - https://vanhung4499.com
+      - https://github.com/vanhung4499/code4rum
+    license: Apache License 2.0
+    license-url: https://github.com/vanhung4499/code4rum/blob/main/License
+    email: vanhung4499@gmail.com
+    group:
+      admin:
+        group-name: Admin Backend Interface Group
+        api-rule: package
+        api-rule-resources:
+          - com.hnv99.forum.web.admin
+      front:
+        group-name: Frontend Interface Group
+        api-rule: package
+        api-rule-resources:
+          - com.hnv99.forum.web.front

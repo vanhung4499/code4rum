@@ -1,0 +1,8 @@
+<!-- Follow or fans list -->
+<div th:if="${!#lists.isEmpty(vo.followList.list)}">
+    <div class="follow-list" th:each="follow : ${vo.followList.list}">
+        <div th:replace="components/follow/follow-card :: follow_card(${follow})">
+            Follow list
+        </div>
+    </div>
+</div>

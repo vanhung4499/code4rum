@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
+<!-- Column Details -->
+<div th:fragment="column_card(column)">
+    <a th:href="'/column/' + ${column.columnId} + '/1'" class="item">
+        <div class="poster">
+            <img th:src="${column.cover}" th:alt="'「' + ${column.column} + '」Cover'" class="lazy poster-img" style="" loading="lazy" />
+        </div>
+        <div class="info">
+            <div class="title">
+                <span class="new-tag-wrap tag" th:if="${column.type == 2}">New</span>
+                <span class="text-highlight" th:text="${column.column}">Distributed Column</span>
+            </div>
+
+            <div class="author">
+                <object>
+                    <a th:href="'/user/' + ${column.author}" class="user">
+                        <img th:src="${column.authorAvatar}" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fdpic.tiankong.com%2Fet%2Fjg%2FQJ9108977402.jpg&refer=http%3A%2F%2Fdpic.tiankong.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1664861850&t=281d7109272f158ecb9fbee9c0fd0efb" class="lazy avatar hero" loading="lazy" />
+                        <span class="name" th:text="${column.authorName}">One Grey</span>
+
+                        <span class="self-description">|</span>
+
+                        <span class="self-description" th:text="${column.authorProfile != null && !column.authorProfile.isEmpty() ? column.authorProfile : 'This person is lazy and has not left a profile yet~'}">Frontend Technology Expert</span>
+
+                    </a>
+                </object>
+            </div>
+            <div class="other">
+                <div class="messages">
+            <span class="message">
+              <span class="article-count" th:text="(${column.state == 2} ? 'Finished ' : 'Updated ') + ${column.count.articleCount} + ' Sections'">Updated 21 Sections</span>
+              <span class="read-count" th:text="'Total ' + ${column.count.totalNums} + ' Sections'">Total 100 Sections</span>
+              <span class="read-count" th:text="${column.count.readCount} + ' People Read'">People Read</span>
+            </span>
+                    <span class="sale-tooltip" th:if="${column.type == 2 && new java.util.Date().getTime() < column.freeEndTime }">
+              <span th:text="${column.type == 2} ? 'Limited Time Free': 'Free'"></span>
+              <span class="count-down-text" th:data-free-endTime="${column.freeEndTime}" th:data-free-startTime="${column.freeStartTime}" th:text="''">Remaining 1 Day 12:50:43.92</span>
+            </span>
+                </div>
+            </div>
+
+            <span class="text-highlight desc" th:text="${column.introduction}">A Simple Distributed Column</span>
+        </div>
+    </a>
+</div>
+</html>

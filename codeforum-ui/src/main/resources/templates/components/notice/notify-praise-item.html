@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- Notification -->
+<div th:fragment="notify_praise_item(msg)" class="notification">
+  <a
+          th:href="'/user/home?userId=' + ${msg.operateUserId}"
+          class=""
+          target="_blank"
+  >
+    <img
+            th:src="${msg.operateUserPhoto}"
+            class="notification-img"
+            loading="lazy"
+    />
+  </a>
+  <div class="notification-right">
+    <div class="notification-content">
+      <div class="profile">
+        <a
+                th:href="'/user/home?userId=' + ${msg.operateUserId}"
+                class=""
+                target="_blank"
+        >
+          <span class="name" th:text="${msg.operateUserName}"></span>
+        </a>
+        liked your article
+        <a th:href="'/article/detail/' + ${msg.relatedId}">
+            <span th:text="${msg.relatedInfo}" class="title-article">
+              Summary: 38 Knowledge Points of Distributed Systems
+            </span>
+        </a>
+      </div>
+    </div>
+    <div class="notification-bottom">
+        <span
+                class="notification-time"
+                th:text="${T(com.hnv99.forum.core.util.DateUtil).time2day(msg.createTime)}"
+        >
+          4 days ago
+        </span>
+    </div>
+  </div>
+</div>
+</html>

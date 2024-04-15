@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
+<!-- Sidebar -->
+<div class="home-right-item-wrap p-0" th:fragment="side_subscribe(side)">
+    <div class="cdc-card mod-subscribe">
+        <div class="cdc-card__inner">
+            <div class="cdc-card__hd">
+                <div class="cdc-card__title">Subscribe</div>
+            </div>
+            <div class="cdc-card__bd">
+                <div class="cdc-card__bd">
+                    <div class="mod-subscribe__title">Search on WeChat for <em th:text="${side.subTitle}">Developers</em>, reply with keyword <em>110</em></div>
+                    <div class="mod-subscribe__content">
+                        <div class="mod-subscribe__content-tag">You'll get</div>
+                        <div class="mod-subscribe__content-inner">
+                            <div class="mod-subscribe__content-detail">
+                                <div class="mod-subscribe__content-prize"
+                                     th:text="${side.content}">10 yuan voucher without threshold</div>
+                                <div class="mod-subscribe__content-desc">Recommended by tech enthusiasts</div>
+                            </div>
+                            <div class="mod-subscribe__content-qr">
+                                <img th:src="${side.img}" th:alt="${side.subTitle}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

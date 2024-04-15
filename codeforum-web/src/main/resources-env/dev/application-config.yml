@@ -1,0 +1,13 @@
+view:
+  site:
+    needLoginArticleReadCount: 30
+    websiteName: Code Forum
+    websiteLogoUrl: https://codeforum.com/img/logo.svg
+    websiteFaviconIconUrl: https://codeforum.com/img/icon.png
+    contactMeTitle: Contact Me - Hung Nguyen
+    pageSize: 20
+    cdnImgStyle:
+    websiteRecord: The record was attacked by villains
+    host: http://127.0.0.1:${server.port}
+    welcomeInfo: Welcome to Code Forum, click <a href="/article/detail/155">here</a> to learn about us.
+    oss:
